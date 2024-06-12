@@ -1,43 +1,62 @@
-#!/usr/bin/env bash
-#init script for `manage_my_process` process
+#!/usr/bin/env python3
 
-argument="$1";
+import os
+import sys
+import time
 
-function start(){
-    ./manage_my_process;
-    "pgrep -f manage_my_process" >> "/var/run/my_process.pid";
-    echo "manage_my_process started";
-}
-
-function stop(){
-    kill -9 "$(pgrep -f manage_my_process )";
-    rm "/var/run/my_process.pid";
-    echo "manage_my_process stopped";
-}
-
-function restart(){
-    kill -9 "$(pgrep -f manage_my_process)";
-    rm "/var/run/my_process.pid";
-    ./manage_my_process;
-    "pgrep -f manage_my_process" >> "/var/run/my_process.pid";
-    echo "manage_my_process restarted";
-}
-
-function usage(){
-    echo "Usage: manage_my_process {start|stop|restart}";
-}
+PID_FILE = '/var/run/my_process.pid'
+LOG_FILE = '/tmp/my_process'
 
 
-if [ -n "$argument" ]; then
-    if [ "$argument" == "start" ]; then 
-        start;
-    elif [ "$argument" == "stop" ]; then 
-        stop;
-    elif [ "$argument" == "restart" ]; then 
-        restart;
-    else
-        usage;
-    fi
-else
-    usage;
-fi
+def start():
+    if os.path.isfile(PID_FILE):
+        print("manage_my_process is already running.")
+        return
+
+    pid = os.fork()
+    if pid > 0:
+        print("manage_my_process started")
+        with open(PID_FILE, 'w') as f:
+            f.write(str(pid))
+        sys.exit()
+    else:
+        while True:
+            with open(LOG_FILE, 'a') as f:
+                f.write("I am alive!\n")
+            time.sleep(2)
+
+
+def stop():
+    if not os.path.isfile(PID_FILE):
+        print("manage_my_process is not running.")
+        return
+
+    with open(PID_FILE, 'r') as f:
+        pid = int(f.read())
+
+    os.kill(pid, 15)
+    os.remove(PID_FILE)
+    print("manage_my_process stopped")
+
+
+def restart():
+    stop()
+    start()
+    print("manage_my_process restarted")
+
+
+def main():
+    if len(sys.argv) != 2 or sys.argv[1] not in ['start', 'stop', 'restart']:
+        print("Usage: manage_my_process {start|stop|restart}")
+        sys.exit(1)
+
+    if sys.argv[1] == 'start':
+        start()
+    elif sys.argv[1] == 'stop':
+        stop()
+    elif sys.argv[1] == 'restart':
+        restart()
+
+
+if __name__ == "__main__":
+    main()
