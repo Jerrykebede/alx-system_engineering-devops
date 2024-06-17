@@ -1,28 +1,30 @@
 #!/bin/bash
 
-# Define paths and commands
+# Path to the manage_my_process script
 MANAGE_SCRIPT="/path/to/manage_my_process"
+
+# PID file location
 PID_FILE="/var/run/my_process.pid"
 
-# Function to start the manage_my_process script
+# Function to start manage_my_process
 start() {
     if [ -f "$PID_FILE" ]; then
         echo "manage_my_process is already running."
     else
-        # Start the manage_my_process script as a background process
+        # Start manage_my_process in the background
         $MANAGE_SCRIPT &
-        # Get its PID and store it in the PID file
+        # Store its PID
         echo $! > "$PID_FILE"
         echo "manage_my_process started."
     fi
 }
 
-# Function to stop the manage_my_process script
+# Function to stop manage_my_process
 stop() {
     if [ -f "$PID_FILE" ]; then
         # Read PID from PID_FILE
         PID=$(cat "$PID_FILE")
-        # Kill the process and remove PID file
+        # Kill the process
         kill $PID && rm -f "$PID_FILE"
         echo "manage_my_process stopped."
     else
@@ -30,7 +32,7 @@ stop() {
     fi
 }
 
-# Function to restart the manage_my_process script
+# Function to restart manage_my_process
 restart() {
     if [ -f "$PID_FILE" ]; then
         stop
