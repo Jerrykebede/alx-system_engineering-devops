@@ -1,8 +1,3 @@
-# cerates a file 
-file { '/tmp/school':
-	mode	=> '0744',
-	owner	=> 'www-data',
-	group	=> 'www-data',
-	content	=> 'I love Puppet'
-}
-
+#!/usr/bin/env bash
+# a Bash script that uses ssh to connect to your server using the private key ~/.ssh/school the user ubuntu
+ssh -i ~/.ssh/school ubuntu@3.84.237.19
