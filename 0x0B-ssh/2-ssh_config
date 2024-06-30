@@ -1,5 +1,4 @@
-# Eexecutes a command 
-exec {'pkill killmenow':
-	path => '/usr/bin:/usr/sbin:/bin'
-}
 
+Host *
+    passwordAuthentication no
+    IdentityFile ~/.ssh/school
