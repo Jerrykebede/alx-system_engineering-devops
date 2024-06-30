@@ -15,6 +15,6 @@ file_line {'Turn off passwd auth':
 file_line {'Use a Identity file':
 	path    => '/etc/ssh/ssh_config',
         line    => 'IdentityFile ~/.ssh/config',
-        match   => '^Identityfile',
+        match   => 'Identityfile',
         ensure  => 'present',
 }
