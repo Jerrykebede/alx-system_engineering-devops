@@ -10,11 +10,3 @@ file_line { 'Declare identity file':
   path   => '/etc/ssh/ssh_config',
   line   => '    IdentityFile ~/.ssh/school',
 }
-
-path    => '/etc/ssh/ssh_config',
-        line    => 'PasswordAuthentication no',
-        match   => 'passwordAuthentication yes',
-        replace => 'true',
-
-
-
