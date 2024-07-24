@@ -1,12 +1,30 @@
-#!/usr/bin/env bash
-#This script installs nginx
-# Install nginx
+#!/bin/bash
 
-sudo apt-get update
-sudo apt-get -y install nginx
-sudo ufw allow 'Nginx HTTP'
-# Configure nginx to listen on port 80 and serve "Hello World!" at the root
-sudo bash -c 'echo "Hello World!" > /var/www/html/index.html'
+# Update apt-get package lists and install nginx
+apt-get update -y
+apt-get install nginx -y
 
-# Restart nginx
-sudo service nginx restart
+# Ensure nginx is running and listening on port 80
+# (Note: nginx usually starts automatically after installation)
+if ! pgrep -x "nginx" > /dev/null
+then
+    exit 1
+fi
+
+# Create a basic index.html file with "Hello World!"
+echo "Hello World!" > /var/www/html/index.html
+
+# Restart nginx without using systemctl
+# We'll use nginx's binary directly and send HUP signal to reload config
+# This simulates a graceful reload similar to systemctl reload nginx
+/bin/kill -s HUP $(cat /var/run/nginx.pid)
+
+# Ensure nginx is still running after reload
+if ! pgrep -x "nginx" > /dev/null
+then
+    exit 1
+fi
+
+# Script execution successful
+exit 0
+
