@@ -1,6 +1,6 @@
-# manifest to create file in tmp directory
+#creating a file in /tmp using puppet
+
 file { '/tmp/school':
-  ensure  => present,
   path    => '/tmp/school',
   mode    => '0744',
   owner   => 'www-data',
